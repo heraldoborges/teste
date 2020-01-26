@@ -428,7 +428,8 @@ rank <- function(dataRank,stmotifs)
 
 
 
-display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset))){
+##### visualization
+display_motifsSTSeries <- function (dataset, rstmotifs,space = c(1:length(dataset))){
   dataset <- as.data.frame(dataset)
   colnames(dataset) <- paste("",1:length(dataset), sep = "")
 
@@ -437,17 +438,18 @@ display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset)
   colnames(data) <- paste("ST",colnames(dataset)[space], sep = "")
   data <- data.frame(x = 1:nrow(data),data)
   data <- reshape2::melt(data,id.vars = 1)
-  data <- data.frame(data, color = "black")  
+  data <- data.frame(data, color = "black")
+
 
   if (!(is.null(stmotifs)||length(stmotifs)==0)){
-    palhetaCores <- brewer.pal(length(rmotifs), 'Spectral')
+    palhetaCores <- brewer.pal(length(rstmotifs), 'Spectral')
     levels(data$color) <- c("black", palhetaCores)
-    
-    size_motif <- nchar(rmotifs[[1]]$isaxcod)
-    for (position in 1:length(rmotifs)){
-      for(i in 1:length(rmotifs[[position]]$vecst$s)){
-        if(rmotifs[[position]]$vecst$s[i]%in%space){
-          data[data$variable==namesCol[rmotifs[[position]]$vecst$s[i]],][(rmotifs[[position]]$vecst$t[i]):(rmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
+
+    size_motif <- nchar(rstmotifs[[1]]$isaxcod)
+    for (position in 1:length(rstmotifs)){
+      for(i in 1:length(rstmotifs[[position]]$vecst$s)){
+        if(rstmotifs[[position]]$vecst$s[i]%in%space){
+          data[data$variable==namesCol[rstmotifs[[position]]$vecst$s[i]],][(rstmotifs[[position]]$vecst$t[i]):(rstmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
         }
       }
     }
@@ -456,8 +458,7 @@ display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset)
 }
 
 
-
-display_motifsDataset <- function(dataset,rankList,alpha){
+display_motifsDataset <- function(dataset,rstmotifs,alpha){
   colorEncode <- 1:alpha
   datasetColor.Org <- as.matrix(dataset)
   datasetColor.Org <- as.vector(datasetColor.Org)
@@ -467,19 +468,19 @@ display_motifsDataset <- function(dataset,rankList,alpha){
   datasetColor.Org <- t(matrix(datasetColor.Org, nrow = nrow(dataset), ncol = ncol(dataset)))
   datasetColor.Org <- melt(datasetColor.Org)
   datasetColor.Org$motif <- FALSE
-  
-  palhetaCores <- brewer.pal(length(rankList), 'Spectral')
-  
+
+  palhetaCores <- brewer.pal(length(rstmotifs), 'Spectral')
+
   motifs.plot <-data.frame("s"=NULL, "t"=NULL, "g"= NULL)
-  for (pos in 1:length(rankList)){
-    motifs.plot<- rbind(motifs.plot ,data.frame("s"=rankList[[pos]]$vecst$s, "t"=rankList[[pos]]$vecst$t, "g"= pos, "color"=palhetaCores[pos]))
+  for (pos in 1:length(rstmotifs)){
+    motifs.plot<- rbind(motifs.plot ,data.frame("s"=rstmotifs[[pos]]$vecst$s, "t"=rstmotifs[[pos]]$vecst$t, "g"= pos, "color"=palhetaCores[pos]))
   }
-  
+
   datasetColor <- merge(datasetColor.Org, motifs.plot, by.x=c('Var1', 'Var2'), by.y=c('s', 't'), all.x = TRUE)
   datasetColor$motif[!is.na(datasetColor$g)] <- TRUE
   datasetColor$g <- NULL
   datasetColor$color <- as.character(datasetColor$color)
-  
+
   ggplot(data=datasetColor, aes(x=datasetColor$Var1, y=datasetColor$Var2, fill=datasetColor$value, color=datasetColor$color))   + geom_raster() +
     scale_fill_gradientn(colours = c("white","dimgrey"), values = scales::rescale(1:alpha), limits=c(1,alpha)) +
     theme_bw() + ggtitle("") + xlab("Space") + ylab("Time") + scale_y_reverse() +
