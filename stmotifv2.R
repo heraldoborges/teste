@@ -1,13 +1,3 @@
-#' Adjust a Dataset
-#' Adjust the dimensions of a dataset to build the blocks
-#' @param D Dataset containing numeric values
-#' @param tb Temporal block size
-#' @param sb Spatial block size
-#' @return Dataset adjusted to build the blocks.
-#' @examples
-#' #Adjust a block
-#' D <- STSADatasetAdjust(STMotif::example_dataset, 20, 12)
-#' @export
 STSADatasetAdjust  <- function(D, tb, sb) {
   c = ncol(D)
   r = nrow(D)
@@ -17,29 +7,6 @@ STSADatasetAdjust  <- function(D, tb, sb) {
   return (D)
 }
 
-
-#'  CSAMiningProcess
-#'
-#' CSA Datamining Process
-#' @param D Dataset containing numeric values
-#' @param DS Dataset containing SAX encoded values
-#' @param w Word Size
-#' @param a Number of letters to do the encode
-#' @param sb Spatial block size
-#' @param tb Temporal block size
-#' @param si Minimum number of occurrences inside each block
-#' @param ka Minimum number of spatial-time series with occurrences inside each block
-#' @return Return a list of ranked motifs. Each motif contains the information [isaxcode, recmatrix, vectst, rank], as described:
-#' @return isaxcode: Motif sequences in character format
-#' @return recmatrix: Matrix giving as information the blocks containing this motif
-#' @return vectst: Coordinate of the start positions of the motif in the original dataset
-#' @return rank: L of information used for motif ranking, as [dist, word, qtd, proj]
-#' @examples
-#' #CSA Datamining process
-#' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,5)
-#' rmotif <- CSAMiningProcess(D,DS,4,5,4,10,2,2)
-#' @export
 CSAMiningProcess <- function (D,DS,w,a,sb,tb,si,ka){
   DS <- NormSAX(D,a)
   stmotifs <- SearchSTMotifs(D,DS,w,a,sb,tb,si,ka)
@@ -48,14 +15,6 @@ CSAMiningProcess <- function (D,DS,w,a,sb,tb,si,ka){
 }
 
 
-#' Normalize the data and SAX indexing
-#' @param D Dataset containing numeric values
-#' @param a Number of letters use to encode
-#' @return A normalized and encoded dataset for a given alphabet a
-#' @examples
-#' #Normalization and Sax Dataset
-#' DS <- NormSAX(STMotif::example_dataset, 5)
-#' @export
 NormSAX <- function (D,a){
   vector <- as.matrix(D)
   vector <- as.vector(vector)
@@ -65,29 +24,6 @@ NormSAX <- function (D,a){
 }
 
 
-
-
-#'  SearchSTMotifs
-#'
-#' Search for Spatial-time Motifs
-#' @param D Dataset containing numeric values
-#' @param DS Dataset containing SAX encoded values
-#' @param w Word Size
-#' @param a Number of letters to do the encode
-#' @param sb "Space slice" Number of columns in each block
-#' @param tb "Time slice" Number of rows in each block
-#' @param si Support of Global Occurrence (GO)
-#' @param ka Support for Spatial Occurrence (SO)
-#' @return Return a list of identified motifs. Each motif contains the information [isaxcode, recmatrix, vectst], as described:
-#' @return isaxcode: Motif sequences in character format
-#' @return recmatrix: Matrix giving as information the blocks containing this motif
-#' @return vectst: Coordinate of the start positions of the motif in the original dataset
-#' @examples
-#' #Search for Spatial-time Motifs
-#' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,5)
-#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
-#' @export
 SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
   
   saxblocks <- STSComputeBlocks(DS, tb, sb)
@@ -141,18 +77,6 @@ SearchSTMotifs <- function (D,DS,w,a,sb,tb,si=3,ka=3){
 
 
 
-
-#' Rank the STmotifs
-#' Rank motifs by their quality
-#' @param stmotifs List of identified motifs
-#' @return The ranked version of the identified list of motifs
-#' @examples
-#' #Search for Spatial-time Motifs
-#' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,5)
-#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
-#' rstmotifs <- RankSTMotifs(stmotifs)
-#' @export
 RankSTMotifs <- function(stmotifs) {
   rstmotifs<-list()
   if(length(stmotifs)>0){
@@ -175,10 +99,6 @@ RankSTMotifs <- function(stmotifs) {
 }
 
 
-###### Subfunctions
-
-# binning the dataset
-# Build an encode for the values
 binning <- function(v, a) {
   p <- seq(from = 0, to = 1, by = 1/a)
   q <- stats::quantile(v, p)
@@ -190,16 +110,14 @@ binning <- function(v, a) {
   return (list(binning=m, bins_factor=vp, q=q, qf=qf, bins=vm, mse=mse))
 }
 
-# Normalize the data
-# Normalize the data using z-score
+
 STSNormalization <- function (vector){
   return ((vector-mean(vector, na.rm = T))/stats::sd(vector, na.rm = T))
 }
 
 
 
-# Encode values
-# Encode numeric values from a vector
+
 STSSaxEncode <- function(dataset, vector, a) {
   mybin <- binning(vector, a)
   myletters <- letters[1:a]
@@ -210,8 +128,7 @@ STSSaxEncode <- function(dataset, vector, a) {
   return(saxvector)
 }
 
-# Compute blocks
-# Create blocks from the original dataset
+
 STSComputeBlocks <- function(dataset, tb, sb) {
   datasets <- list()
   rectangles <- list()
@@ -241,8 +158,7 @@ STSComputeBlocks <- function(dataset, tb, sb) {
 }
 
 
-# Generate motifs from a block
-# Take a block and discover the frequent motifs
+
 identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
   #Generation all the possible subsequences
   #ts.sax: a matrix with all the SAX subsequences
@@ -283,9 +199,7 @@ identifyMotifsInBlock <- function(ts, tss, w, tb , a) {
 }
 
 
-# Handle motifs
-#
-# Handle motifs from one block
+
 STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si) {
   k <- length(stmotifs)
   
@@ -349,8 +263,7 @@ STSIdentifySTMotif <- function(stmotifs, motif, nrows, ncols, rectangle, ka, si)
   return (stmotifs)
 }
 
-# Handle one motif
-# Remove the isolated motifs
+
 STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
   #We selected one motif with its information
   tight <- list()
@@ -407,7 +320,7 @@ STSIdentifyTightSTMotif <- function(stmotif, rectangles) {
 }
 
 
-# Function to plot spatial series
+
 plot.series <- function(series, label_series = "", label_x = "", label_y = "") {
   grf <- ggplot(data=series, ggplot2::aes(x = series$x, y = series$value, colour = series$color, group = 1))
   grf <- grf + scale_colour_identity(series$color) + geom_line() + geom_point(data=series, aes(x = series$x, y = series$value), size=0.5) + facet_grid(variable ~ .)
@@ -514,75 +427,35 @@ rank <- function(dataRank,stmotifs)
 }
 
 
-######## visualization
 
-
-#' Plot the selected spatial-time series with the selected motifs highlighted
-#'
-#' @param dataset Dataset containing numeric values
-#' @param rmotifs List of ranked motifs
-#' @param space Select a range of columns to plot the corresponding spatial series
-#' @return Selected spatial series with the selected motifs highlighted
-#' @import ggplot2
-#' @import reshape2
-#' @examples
-#' #Launch all the workflow
-#' #Plot the result
-#' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,5)
-#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
-#' rstmotifs <- RankSTMotifs(stmotifs)
-#' display_motifsSTSeries(dataset = STMotif::example_dataset,rstmotifs[c(1:4)],space = c(1:4,10:12))
-#' @export
-#'
 display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset))){
   dataset <- as.data.frame(dataset)
   colnames(dataset) <- paste("",1:length(dataset), sep = "")
-  
-  size_motif <- nchar(rmotifs[[1]]$isaxcod)
+
   namesCol <- paste("ST",colnames(dataset),sep = "")
   data <- as.data.frame(dataset[,space])
   colnames(data) <- paste("ST",colnames(dataset)[space], sep = "")
   data <- data.frame(x = 1:nrow(data),data)
   data <- reshape2::melt(data,id.vars = 1)
-  data <- data.frame(data, color = "black")
-  palhetaCores <- brewer.pal(length(rmotifs), 'Spectral')
-  levels(data$color) <- c("black", palhetaCores)
-  
-  for (position in 1:length(rmotifs)){
-    for(i in 1:length(rmotifs[[position]]$vecst$s)){
-      if(rmotifs[[position]]$vecst$s[i]%in%space){
-        data[data$variable==namesCol[rmotifs[[position]]$vecst$s[i]],][(rmotifs[[position]]$vecst$t[i]):(rmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
+  data <- data.frame(data, color = "black")  
+
+  if (!(is.null(stmotifs)||length(stmotifs)==0)){
+    palhetaCores <- brewer.pal(length(rmotifs), 'Spectral')
+    levels(data$color) <- c("black", palhetaCores)
+    
+    size_motif <- nchar(rmotifs[[1]]$isaxcod)
+    for (position in 1:length(rmotifs)){
+      for(i in 1:length(rmotifs[[position]]$vecst$s)){
+        if(rmotifs[[position]]$vecst$s[i]%in%space){
+          data[data$variable==namesCol[rmotifs[[position]]$vecst$s[i]],][(rmotifs[[position]]$vecst$t[i]):(rmotifs[[position]]$vecst$t[i]+(size_motif-1)),4] <- palhetaCores[position]
+        }
       }
     }
   }
-  
   plot.series(data[1:nrow(data),])
-  
 }
 
 
-#' Plot a heatmap of the dataset and highlight the selected motifs from the list
-#'
-#' @param dataset Numerical dataset
-#' @param rankList List of ranked motifs
-#' @param alpha The cardinality of the SAX alphabet
-#' @return Heatmap dataset with seelected motifs
-#' @import ggplot2
-#' @import reshape2
-#' @import scales
-#' @import RColorBrewer
-#' @importFrom grDevices grey.colors
-#' @examples
-#' #Launch all the workflow
-#' #Plot the result
-#' D  <- STMotif::example_dataset
-#' DS <- NormSAX(STMotif::example_dataset,5)
-#' stmotifs <- SearchSTMotifs(D,DS,4,5,4,10,2,2)
-#' rstmotifs <- RankSTMotifs(stmotifs)
-#' display_motifsDataset(dataset = STMotif::example_dataset, rstmotifs[c(1:4)],  5)
-#' @export
-#'
 display_motifsDataset <- function(dataset,rankList,alpha){
   colorEncode <- 1:alpha
   datasetColor.Org <- as.matrix(dataset)
@@ -612,13 +485,3 @@ display_motifsDataset <- function(dataset,rankList,alpha){
     guides(fill=FALSE, color=FALSE) +
     geom_point(colour = ifelse(datasetColor$motif,datasetColor$color,NA), size = 4, shape=15, show.legend = FALSE)
 }
-
-
-
-
-
-
-
-
-
-
