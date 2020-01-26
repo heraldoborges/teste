@@ -456,6 +456,7 @@ display_motifsSTSeries <- function (dataset, rmotifs,space = c(1:length(dataset)
 }
 
 
+
 display_motifsDataset <- function(dataset,rankList,alpha){
   colorEncode <- 1:alpha
   datasetColor.Org <- as.matrix(dataset)
