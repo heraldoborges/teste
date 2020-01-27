@@ -441,7 +441,7 @@ display_motifsSTSeries <- function (dataset, rstmotifs,space = c(1:length(datase
   data <- data.frame(data, color = "black")
 
 
-  if (!(is.null(stmotifs)||length(stmotifs)==0)){
+  if (!(is.null(rstmotifs)||length(rstmotifs)==0)){
     palhetaCores <- brewer.pal(length(rstmotifs), 'Spectral')
     levels(data$color) <- c("black", palhetaCores)
 
