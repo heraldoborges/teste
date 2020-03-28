@@ -29,16 +29,19 @@ p {
 }
 </style>
 </head>
-<body>
+<body align="center">
+<p><br></p>
+<h2 class="negrito">Calculadora Número Único de Protocolo (NUP)</h2>
+<h1>Referência: <a href="http://www.in.gov.br/en/web/dou/-/portaria-interministerial-n-11-de-25-de-novembro-de-2019-229645093">Portaria Interministerial n° 11, de 25 de dezembro de 2019</a></h1>
 
-<h1>Calculadora Número Único de Protocolo (NUP)</h1>
-<h2 class="normal">Portaria Interministerial n° 11, de 25 de dezembro de 2019 </h2>
-<h2 class="negrito">Calculadora dos dígitos verificadores (DVs) do Número Único de Protocolo (NUP)</h2>
-<h3 class="normal">http://www.in.gov.br/en/web/dou/-/portaria-interministerial-n-11-de-25-de-novembro-de-2019-229645093</h3>
+
 <p>Informe o número-base do NUP e o ano, sem os caracteres especiais:</p>
 23063.<input id="nup" type="text" maxlength="6" size="8">/<input id="ano" type="text" maxlength="4" size="6">-DV
 <button type="button" onclick="calculaDVHB()">Calcular DV</button></p>
 <p id="resultado"></p>
+<br>
+
+
 
 <script>
 document.getElementById("ano").defaultValue = new Date().getFullYear();
@@ -84,7 +87,7 @@ function calculaDVHB() {
   x = ""+x+dv1
   dv2 = restoDV(x) //pego o dv2
 
-  resultado = 'Número final: <font color="blue"> 23063.'+valor+'/'+ano+'-'+dv1+dv2+'</font><br>';
+  resultado = 'Número final: <font color="#005CB9"> 23063.'+valor+'/'+ano+'-'+dv1+dv2+'</font><br>';
 
   document.getElementById("resultado").innerHTML = resultado;
 
