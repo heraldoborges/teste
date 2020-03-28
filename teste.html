@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="pt-br">
+<head>
+<meta http-equiv="Content-Type" content="text/html">
+<meta charset="utf-8">
+<title>Calculadora do Dígito Verificador do NUP, conforme Portaria Interministerial 2321, de 30 de dezembro de 2014</title>
+<style>
+h1 {
+ font-size: 1em;
+ text-align: center;
+ font-family: Tahoma, Geneva, sans-serif;
+ font-weight: normal;
+}
+h2.negrito {
+ font-size: 1em;
+ text-align: center;
+ font-family: Tahoma, Geneva, sans-serif;
+ font-weight: bold;
+}
+h2.normal {
+ font-size: 1em;
+ text-align: center;
+ font-family: Tahoma, Geneva, sans-serif;
+ font-weight: normal;
+}
+p {
+ font-size: 1em;
+ font-family: Tahoma, Geneva, sans-serif;
+}
+</style>
+</head>
+<body>
+<h1>Ministério do Planejamento, Orçamento e Gestão</h1>
+<h1>Ministério da Justiça</h1>
+<h2 class="normal">Portaria Interministerial MJ/MP n° 2.321, de 30 de dezembro de 2014 </h2>
+<h2 class="negrito">Calculadora dos dígitos verificadores (DVs) do Número Único de Protocolo (NUP)</h2>
+<p>Informe o número-base do NUP, sem os caracteres especiais:</p>
+23063.<input id="nup" type="text" maxlength="6" size="8">/<input id="ano" type="text" maxlength="4" size="6">-DV
+<button type="button" onclick="calculaDVHB()">Calcular DVsaa</button></p>
+<p id="resultado"></p>
+
+<script>
+document.getElementById("ano").defaultValue = new Date().getFullYear();
+
+function restoDV(valor){
+  var dv = 0;
+  var acumulador = 0;
+  var size = valor.length;
+  var fator = size+1;
+
+  for (i=0; i<size; i++){
+    //document.write("fator="+fator+"valor"+valor[i]+"<br>");
+    acumulador = acumulador + ((fator--)*valor[i]);
+  }
+
+  dv = 11 - acumulador%11
+  if (dv>=10)dv=1
+  //document.write("valor="+valor+ "<br>");
+  //document.write("acumulador="+acumulador+ "<br>");
+  //document.write("dv="+dv+ "<br>");
+
+  return (dv)
+}
+
+function calculaDVHB() {
+  var x, text, ano, anoAtual, valor;
+  anoAtual = new Date().getFullYear();
+  valor = document.getElementById("nup").value;
+  ano = document.getElementById("ano").value;
+
+  if (!(/^\d+$/.test(valor))){
+    document.getElementById("resultado").innerHTML = '<font color="red">Número inválido. Digite apenas números. </font>';
+    return(0);
+  }
+  if ((!(/^\d+$/.test(ano)))||(ano>anoAtual)||(ano<1980)){
+      document.getElementById("resultado").innerHTML =  '<font color="red">Ano inválido.</font>';
+      return(0);
+  }
+
+  valor = ("000000" + valor).slice(-6)
+  x = ""+ "23063"+valor+ano
+  dv1 = restoDV(x) //pego o dv1
+  x = ""+x+dv1
+  dv2 = restoDV(x) //pego o dv2
+
+  resultado = 'Número final: <font color="blue"> 23063.'+valor+'/'+ano+'-'+dv1+dv2+'</font><br>';
+
+  document.getElementById("resultado").innerHTML = resultado;
+
+
+}
+
+
+
+
+</script>
+</body>
+</html>
